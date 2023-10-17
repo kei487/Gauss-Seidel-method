@@ -1,2 +1,2 @@
 # Gauss-Seidel-method
-Gauss-Seidel method and Gaussian elimination
+Programed Gauss-Seidel method and Gaussian elimination with C
