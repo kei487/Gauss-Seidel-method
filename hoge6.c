@@ -2,13 +2,13 @@
 #include <stdlib.h>
 
 
-double get_x(int h,int n,double *x,double *a){ //x_hを返す関数
+double get_x(int h,int n,double x[n],double a[n][n+1]){ //x_hを返す関数
     double m=0;
-    m+=a[(n+1)*h+n];
+    m+=a[h][n];
     for(int i=1;i<n;i++){
-        m-=a[(n+1)*h+(h+i)%n]*x[(h+i)%n];
+        m-=a[h][(h+i)%n]*x[(h+i)%n];
     }
-    m/=a[(n+2)*h];
+    m/=a[h][h];
     return m;
 }
 
@@ -28,7 +28,6 @@ int compe(double *a,double *b,int n){
 
 int main(){
     //======init=======
-    double *x,*A,*tmp;
     int n,count,clr=1;
 
     //=====================input=====================
@@ -38,10 +37,11 @@ int main(){
         printf("2以上9以下の数直してください:");
         scanf("%d",&n);
     }
-    //callocで任意の長さの配列を取る
-    A = (double *)calloc(n*(n+1),sizeof(double));
-    x = (double *)calloc(n,sizeof(double));
-    tmp = (double *)calloc(n,sizeof(double));
+    //callocを使わずともこれでコンパイルが通り動くのでこちらのバージョンも....c99(gccのver.4.5.0)から対応しているらしい...
+    double A[n][n+1];
+    double x[n];
+    double tmp[n];
+
     //===行列のイメージ表示===
     for(int i=1;i<n+1;i++){
         printf("|");
@@ -60,12 +60,12 @@ int main(){
     printf("左辺を入力してくださいa[1][1],a[1][2],~,a[%d][%d]:",n,n);
     for(int i=0;i<n;i++){
         for(int j=0;j<n;j++){
-            scanf("%lf",&A[(n+1)*i+j]);
+            scanf("%lf",&A[i][j]);
         }
     }
     printf("右辺を入力してくださいx1~x%d:",n);
     for(int i=0;i<n;i++){
-        scanf("%lf",&A[(n+1)*i+3]);
+        scanf("%lf",&A[i][n]);
     }
     printf("xの初期値を入力してください:");
     scanf("%lf",&x[0]);
@@ -109,11 +109,6 @@ int main(){
             }
         }puts("");
     }
-
-    //callocを使ったのでfree,=NULLはフェイルセーフ
-    free(x);x=NULL;
-    free(A);A=NULL;
-    free(tmp);tmp=NULL;
 
     return 0;
 }
